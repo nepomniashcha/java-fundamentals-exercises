@@ -2,7 +2,6 @@ package com.bobocode.basics;
 
 import com.bobocode.basics.util.BaseEntity;
 import lombok.Data;
-import lombok.val;
 
 import java.io.Serializable;
 import java.util.*;
@@ -31,7 +30,7 @@ public class CrazyGenerics {
      * @param <T> – value type
      */
     @Data
-    public static class Sourced<T> { // todo: refactor class to introduce type parameter and make value generic
+    public static class Sourced<T> {
         private T value;
         private String source;
     }
@@ -44,7 +43,6 @@ public class CrazyGenerics {
      */
     @Data
     public static class Limited<T extends Number> {
-        // todo: refactor class to introduce type param bounded by number and make fields generic numbers
         private final T actual;
         private final T min;
         private final T max;
@@ -57,8 +55,7 @@ public class CrazyGenerics {
      * @param <T> – source object type
      * @param <R> - converted result type
      */
-    public interface Converter<T, R> { // todo: introduce type parameters
-        // todo: add convert method
+    public interface Converter<T, R> {
         public R convert(T param);
     }
 
@@ -69,7 +66,7 @@ public class CrazyGenerics {
      *
      * @param <T> – value type
      */
-    public static class MaxHolder<T extends Comparable<? super T>> { // todo: refactor class to make it generic
+    public static class MaxHolder<T extends Comparable<? super T>> { 
         private T max;
 
         public MaxHolder(T max) {
@@ -98,7 +95,7 @@ public class CrazyGenerics {
      *
      * @param <T> – the type of objects that can be processed
      */
-    interface StrictProcessor<T extends Comparable<? super T> & Serializable> { // todo: make it generic
+    interface StrictProcessor<T extends Comparable<? super T> & Serializable> {
         void process(T obj);
     }
 
@@ -109,7 +106,7 @@ public class CrazyGenerics {
      * @param <T> – a type of the entity that should be a subclass of {@link BaseEntity}
      * @param <C> – a type of any collection
      */
-    interface CollectionRepository<T extends BaseEntity, C extends Collection<T>> { // todo: update interface according to the javadoc
+    interface CollectionRepository<T extends BaseEntity, C extends Collection<T>> {
         void save(T entity);
         C getEntityCollection();
     }
@@ -120,7 +117,7 @@ public class CrazyGenerics {
      *
      * @param <T> – a type of the entity that should be a subclass of {@link BaseEntity}
      */
-    interface ListRepository<T extends BaseEntity> extends CollectionRepository<T, List<T>> { // todo: update interface according to the javadoc
+    interface ListRepository<T extends BaseEntity> extends CollectionRepository<T, List<T>> {
     }
 
     /**
@@ -135,7 +132,7 @@ public class CrazyGenerics {
      */
     interface ComparableCollection<E> extends Collection<E>, Comparable<Collection<?>> {
         @Override
-        default int compareTo(Collection<?> comp){
+        default int compareTo(Collection<?> comp) {
             return Integer.compare(this.size(), comp.size());
         }
     }
@@ -152,7 +149,6 @@ public class CrazyGenerics {
          * @param list
          */
         public static void print(List<?> list) {
-            // todo: refactor it so the list of any type can be printed, not only integers
             list.forEach(element -> System.out.println(" – " + element));
         }
 
@@ -219,9 +215,7 @@ public class CrazyGenerics {
          * @param comparator an object that will be used to compare elements
          * @param <T>        type of elements
          * @return optional max value
-         */
-        // todo: create a method and implement its logic manually without using util method from JDK
-        
+         */        
         public static <T> Optional<T> findMax(Iterable<T> elements, Comparator<? super T> comparator) {
             Iterator<T> iterator = elements.iterator();
             if (!iterator.hasNext()) {
@@ -250,9 +244,7 @@ public class CrazyGenerics {
          * @param <T>      entity type
          * @return an entity from the given collection that has the max createdOn value
          */
-        // todo: create a method according to JavaDoc and implement it using previous method
-
-        public static <T extends BaseEntity> T findMostRecentlyCreatedEntity(Collection<T> entities){
+        public static <T extends BaseEntity> T findMostRecentlyCreatedEntity(Collection<T> entities) {
             return findMax(entities, CREATED_ON_COMPARATOR).orElseThrow();
         }
 
@@ -265,16 +257,15 @@ public class CrazyGenerics {
          * @param i        index of the element to swap
          * @param j        index of the other element to swap
          */
-        public static void swap(List<?> elements, int i, int j) {
-            Objects.checkIndex(i, elements.size());
-            Objects.checkIndex(j, elements.size());
-            swapHelper(elements, i, j);
-        }
-
         private static <T> void swapHelper(List<T> elements, int i, int j) {
             T temp = elements.get(i);
             elements.set(i, elements.get(j));
             elements.set(j, temp);
+        }
+        public static void swap(List<?> elements, int i, int j) {
+            Objects.checkIndex(i, elements.size());
+            Objects.checkIndex(j, elements.size());
+            swapHelper(elements, i, j);
         }
 
     }
